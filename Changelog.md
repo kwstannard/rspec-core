@@ -29,6 +29,16 @@ Enhancements
 * Times in profile output are now bold instead of failure_color.
   (Matthew Boedicker)
 * Add --no-fail-fast command line option. (Gonzalo Rodríguez-Baltanás Díaz)
+* Always treat symbols passed as metadata args as hash
+  keys with true values. RSpec 2 supported this with the
+  `treat_symbols_as_metadata_keys_with_true_values` but
+  now this behavior is always enabled (Myron Marston).
+
+Deprecations
+
+* `treat_symbols_as_metadata_keys_with_true_values` is deprecated and no
+  longer has an affect now that the behavior it enabled is always
+  enabled (Myron Marston).
 
 Bugfix
 * Fix a `NoMethodError` that was being raised when there were no shared
