@@ -16,8 +16,8 @@ module RSpec::Core::Ordering
       configuration = RSpec::Core::Configuration.new
       configuration.seed = 1234
 
-      strategy = RandomOrdering.new(configuration)
-      strategy.order([1, 2, 3, 4])
+      strategy = RandomOrdering.new
+      strategy.order([1, 2, 3, 4], configuration)
     end
 
     it 'resets random number generation' do

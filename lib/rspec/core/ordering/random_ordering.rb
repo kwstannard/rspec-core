@@ -1,11 +1,7 @@
 module RSpec::Core::Ordering
   class RandomOrdering
-    def initialize(configuration = RSpec.configuration)
-      @configuration = configuration
-    end
-
-    def order(items)
-      Kernel.srand @configuration.seed
+    def order(items, configuration = RSpec.configuration)
+      Kernel.srand configuration.seed
       ordering = items.sort_by { Kernel.rand(items.size) }
       Kernel.srand # reset random generation
       ordering

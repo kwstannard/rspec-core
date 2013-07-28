@@ -1390,9 +1390,8 @@ module RSpec::Core
 
         it 'sets up random ordering' do
           RSpec.stub(:configuration => config)
-          list = [1, 2, 3, 4].extend(Extensions::Ordered::Examples)
-          Kernel.should_receive(:rand).and_return(3, 1, 4, 2)
-          expect(list.ordered).to eq([2, 4, 1, 3])
+          global_ordering = config.ordering_registry.resolve_example_ordering
+          expect(global_ordering).to be_an_instance_of(Ordering::RandomOrdering)
         end
       end
 
@@ -1412,9 +1411,9 @@ module RSpec::Core
 
         it 'clears the random ordering' do
           RSpec.stub(:configuration => config)
-          list = [1, 2, 3, 4].extend(Extensions::Ordered::Examples)
-          Kernel.should_not_receive(:rand)
-          expect(list.ordered).to eq([1, 2, 3, 4])
+          list = [1, 2, 3, 4]
+          ordering_strategy = config.ordering_registry.resolve_example_ordering
+          expect(ordering_strategy.order(list)).to eq([1, 2, 3, 4])
         end
       end
     end
@@ -1422,11 +1421,12 @@ module RSpec::Core
     describe "#order_examples" do
       before { RSpec.stub(:configuration => config) }
 
-      it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::Examples' do
+      it 'sets a block that determines the ordering of a collection' do
         examples = [1, 2, 3, 4]
-        examples.extend Extensions::Ordered::Examples
         config.order_examples { |examples_to_order| examples_to_order.reverse }
-        expect(examples.ordered).to eq([4, 3, 2, 1])
+
+        ordering_strategy = config.ordering_registry.resolve_example_ordering
+        expect(ordering_strategy.order(examples)).to eq([4, 3, 2, 1])
       end
 
       it 'sets #order to "custom"' do
@@ -1438,11 +1438,11 @@ module RSpec::Core
     describe "#order_groups" do
       before { RSpec.stub(:configuration => config) }
 
-      it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::ExampleGroups' do
+      it 'sets a block that determines the ordering of a collection' do
         groups = [1, 2, 3, 4]
-        groups.extend Extensions::Ordered::ExampleGroups
         config.order_groups { |groups_to_order| groups_to_order.reverse }
-        expect(groups.ordered).to eq([4, 3, 2, 1])
+        ordering_strategy = config.ordering_registry.resolve_group_ordering
+        expect(ordering_strategy.order(groups)).to eq([4, 3, 2, 1])
       end
 
       it 'sets #order to "custom"' do
@@ -1452,20 +1452,22 @@ module RSpec::Core
     end
 
     describe "#order_groups_and_examples" do
-      let(:examples) { [1, 2, 3, 4].extend Extensions::Ordered::Examples }
-      let(:groups)   { [1, 2, 3, 4].extend Extensions::Ordered::ExampleGroups }
+      let(:examples) { [1, 2, 3, 4] }
+      let(:groups)   { [1, 2, 3, 4] }
 
       before do
         RSpec.stub(:configuration => config)
         config.order_groups_and_examples { |list| list.reverse }
       end
 
-      it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::Examples' do
-        expect(examples.ordered).to eq([4, 3, 2, 1])
+      it 'sets a block that determines the ordering of a collection' do
+        ordering_strategy = config.ordering_registry.resolve_example_ordering
+        expect(ordering_strategy.order(examples)).to eq([4, 3, 2, 1])
       end
 
-      it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::ExampleGroups' do
-        expect(groups.ordered).to eq([4, 3, 2, 1])
+      it 'sets a block that determines the ordering of a collection extended' do
+        ordering_strategy = config.ordering_registry.resolve_group_ordering
+        expect(ordering_strategy.order(groups)).to eq([4, 3, 2, 1])
       end
     end
 
