@@ -31,6 +31,7 @@ Enhancements
   (Matthew Boedicker)
 * Add --no-fail-fast command line option. (Gonzalo Rodríguez-Baltanás Díaz)
 * Runner now considers the local system ip address when running under Drb (Adrian CB)
+* Limit spamminess of deprecation messages (Bradley Schaefer, Loren Segal)
 
 Bugfix
 * Fix a `NoMethodError` that was being raised when there were no shared
