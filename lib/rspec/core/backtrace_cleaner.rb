@@ -16,30 +16,19 @@ module RSpec
 
       def initialize(inclusion_patterns=nil, exclusion_patterns=DEFAULT_EXCLUSION_PATTERNS.dup)
         @exclusion_patterns = exclusion_patterns
-
-        if inclusion_patterns.nil?
-          @inclusion_patterns = (matches_an_exclusion_pattern? Dir.getwd) ? [Regexp.new(Dir.getwd)] : []
-        else
-          @inclusion_patterns = inclusion_patterns
-        end
+        @inclusion_patterns = inclusion_patterns || (exclusion_patterns.any? {|p| p =~ Dir.getwd} ? [Regexp.new(Dir.getwd)] : [])
       end
 
       def exclude?(line)
-        @inclusion_patterns.none? {|p| line =~ p} and matches_an_exclusion_pattern?(line)
+        @exclusion_patterns.any? {|p| p =~ line} and @inclusion_patterns.none? {|p| p =~ line}
       end
 
-      def full_backtrace=(true_or_false)
-        @exclusion_patterns = true_or_false ? [] : DEFAULT_EXCLUSION_PATTERNS.dup
+      def full_backtrace=(full_backtrace)
+        @exclusion_patterns = full_backtrace ? [] : DEFAULT_EXCLUSION_PATTERNS.dup
       end
 
       def full_backtrace?
         @exclusion_patterns.empty?
-      end
-
-      private
-
-      def matches_an_exclusion_pattern?(line)
-        @exclusion_patterns.any? {|p| line =~ p}
       end
     end
   end
