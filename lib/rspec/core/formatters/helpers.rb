@@ -77,6 +77,7 @@ module RSpec
           "#{count} #{string}#{'s' unless count.to_f == 1}"
         end
 
+        # @api private
         def format_backtrace(backtrace, options = {})
           return backtrace if options[:full_backtrace]
           backtrace.
@@ -85,11 +86,9 @@ module RSpec
             compact
         end
 
-        protected
-
+        # @api private
         def backtrace_line(line)
-          return nil if RSpec.configuration.backtrace_cleaner.exclude?(line)
-          RSpec::Core::Metadata::relative_path(line)
+          RSpec::Core::Metadata::relative_path(line) unless RSpec.configuration.backtrace_cleaner.exclude?(line)
         rescue SecurityError
           nil
         end
