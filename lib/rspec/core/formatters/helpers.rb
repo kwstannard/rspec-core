@@ -84,8 +84,7 @@ module RSpec
             backtrace = backtrace[0, at_exit_index]
           end
 
-          cleansed = backtrace.map { |line| backtrace_line(line) }.compact
-          cleansed.empty? ? backtrace : cleansed
+          backtrace.map { |line| backtrace_line(line) }.compact
         end
 
         protected
