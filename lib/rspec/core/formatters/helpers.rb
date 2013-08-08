@@ -78,7 +78,6 @@ module RSpec
         end
 
         def format_backtrace(backtrace, options = {})
-          return "" unless backtrace
           return backtrace if options[:full_backtrace] == true
 
           if at_exit_index = backtrace.index(RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE)
