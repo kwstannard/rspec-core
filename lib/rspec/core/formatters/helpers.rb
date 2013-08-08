@@ -78,13 +78,11 @@ module RSpec
         end
 
         def format_backtrace(backtrace, options = {})
-          return backtrace if options[:full_backtrace] == true
-
-          if at_exit_index = backtrace.index(RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE)
-            backtrace = backtrace[0, at_exit_index]
-          end
-
-          backtrace.map { |line| backtrace_line(line) }.compact
+          return backtrace if options[:full_backtrace]
+          backtrace.
+            take_while {|l| l != RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE}.
+            map        {|l| backtrace_line(l)}.
+            compact
         end
 
         protected
