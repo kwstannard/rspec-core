@@ -305,6 +305,15 @@ module RSpec
       # @see example_group
       define_example_group_method :fcontext,  :focus => true
 
+      # Shortcut to define an example group with simple `let` variables
+      def self.given(**args)
+        description = args.map {|k, v| "#{k} is #{v.inspect}" }
+          .join(" and ")
+        example_group("when #{description}").tap do |c|
+          args.each { |k,v| c.let(k) { v } }
+        end
+      end
+
       # @!endgroup
 
       # @!group Including Shared Example Groups
